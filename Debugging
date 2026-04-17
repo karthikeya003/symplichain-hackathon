@@ -1,0 +1,70 @@
+I follow a top-down debugging approach, starting from the entry point (client request) and validating each component in the pipeline sequentially to isolate the failure.
+
+Step 1: Check Django API (Entry Point)
+Goal:Check if request is reaching backend
+What to check:
+-Any errors?
+-Status codes?
+-Request logs?
+Tools:
+-AWS CloudWatch logs
+-EC2 instance logs
+Example:  sudo journalctl -u gunicorn -f
+--If request NOT reaching → problem is in mobile app/network
+
+Step 2: Check File Upload to S3
+Goal:Verify if image is stored
+What to check:
+-Is file present in S3 bucket?
+-Any permission errors?
+Tools:
+-AWS S3 Console
+-Django logs
+
+If NOT uploaded:
+-Issue with:
+-S3 credentials
+-Bucket policy
+-File handling code
+
+Step 3: Check Celery Task Trigger
+Goal:Verify background job execution
+What to check:
+-Is task triggered?
+-Is it failing?
+Tools:
+-Celery Flower dashboard
+-Worker logs
+
+Example:
+# celery -A app worker --loglevel=info
+If task not triggered:
+-Issue in Django → Celery connection
+
+Step 4: Check AI Model (Bedrock)
+Goal:Verify model processing
+What to check:
+-API response errors
+-Timeout issues
+Tools:
+-CloudWatch logs
+-Application logs
+
+Possible issues:
+-Invalid input format
+-Model timeout
+-API failure
+
+Step 5: Check Database (PostgreSQL)
+Goal: Verify result storage
+
+What to check:
+-Is data written to DB?
+-Any DB errors?
+Tools:
+-RDS Console
+-SQL queries
+
+If not saved:
+-DB connection issue
+-Transaction failure
