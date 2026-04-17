@@ -1,0 +1,66 @@
+Symplichain Hackathon Submission
+
+Name: Abbagani Karthikeya  
+Role: Software Engineering Intern Applicant  
+
+Overview:
+This repository contains my submission for the Symplichain Software Engineering Intern Hackathon.
+
+The challenge focuses on solving real-world engineering problems across:
+- Distributed systems (rate limiting & fairness)
+- Mobile architecture
+- CI/CD pipeline design
+- Production debugging
+
+Approach:
+I focused on:
+- Practical and scalable solutions
+- Using the existing tech stack (Django, Redis, Celery, AWS)
+- Clear reasoning instead of over-engineering
+
+Project Structure
+
+Part 1: Shared Gateway Problem:
+Designed a request pooling and throttling system to:
+- Enforce API rate limit of 3 requests/sec
+- Ensure fairness across multiple customers
+- Handle retries and failures
+
+Key concepts:
+- Redis-based queue
+- Celery workers with rate limiting
+- Round-robin scheduling for fairness
+
+Part 2: Mobile Architecture:
+Designed a mobile-first architecture using:
+- React Native (cross-platform)
+- Django REST APIs
+- JWT-based authentication
+
+Focus:
+- Low-friction user experience
+- Fast interactions for logistics workflows
+
+ Part 3: CI/CD Pipeline:
+Implemented GitHub Actions workflow to:
+- Automate deployment on staging & production
+- Run migrations and static collection
+- Deploy to EC2 using SSH
+
+Suggested improvements:
+- Docker for containerization
+- Terraform for infrastructure automation
+
+Part 4: Debugging Strategy
+
+Defined a structured debugging approach:
+- Step-by-step validation from API → S3 → Celery → AI → DB
+- Use of CloudWatch, logs, and monitoring tools
+- Root cause isolation methodology
+
+
+---
+
+## 🙌 Thank You
+
+Thank you for the opportunity. I look forward to discussing my approach and decisions.
