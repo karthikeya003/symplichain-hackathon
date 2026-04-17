@@ -1,0 +1,82 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - staging
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.10
+
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run Migrations
+      run: |
+        python manage.py migrate
+
+    - name: Collect Static Files
+      run: |
+        python manage.py collectstatic --noinput
+
+    - name: Deploy to EC2
+      run: |
+        echo "${{ secrets.SSH_KEY }}" > key.pem
+        chmod 600 key.pem
+        ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@YOUR_EC2_IP << 'EOF'
+          cd /home/ubuntu/app
+          git pull origin main
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+          sudo systemctl restart gunicorn
+          sudo systemctl restart nginx
+        EOF
+
+
+-The pipeline is triggered on push to staging and main branches. It installs dependencies, runs migrations, collects static files, and deploys to EC2 using SSH.
+
+Store in GitHub Secrets:
+SSH private key
+EC2 IP
+DB credentials
+
+
+1. Docker 
+I would containerize the application using Docker.
+Why?
+-Same environment everywhere
+-Easier deployment
+-No “works on my machine” issues
+
+2. Terraform (Infra as Code)
+I would use Terraform to automate AWS infrastructure.
+Why?
+-Reproducible infra
+-Version-controlled
+-No manual EC2 setup
+
+3. Monitoring Improvements
+Current: Basic CloudWatch
+Improve:
+-Add alerts
+-Health checks
+-Logging system
+
+4. Rollback Strategy
+If deployment fails:
+-Revert to previous version
+-Restart services
