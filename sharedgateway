@@ -1,0 +1,45 @@
+Clients
+  ↓
+Django API
+  ↓
+Redis Queue (per customer)
+  ↓
+Scheduler (round robin)
+  ↓
+Celery Worker (rate limited)
+  ↓
+External API
+
+The system integrates with a third-party API that enforces a strict rate limit of 3 requests per second.
+However, during peak hours, the platform generates more than 20 requests per second across 25 customers.
+
+This leads to:
+
+API failures (null responses)
+Unreliable system behavior
+
+The goal is to design a system that:
+
+Ensures rate limit compliance (≤ 3 req/sec)
+Handles high incoming traffic
+Maintains fairness across customers
+Handles failures gracefully
+Architecture Design
+ Components Used
+
+I designed the system using components already present in the existing tech stack:
+
+Django API → Receives incoming requests
+Redis → Acts as a message queue and temporary storage
+Celery Workers → Process queued requests asynchronously
+Scheduler Layer → Ensures fair distribution of requests
+External API → Third-party service with rate limit
+
+ Architecture Flow
+Client sends request to Django API
+Instead of directly calling external API, request is pushed to Redis queue
+Separate queues are maintained per customer
+A scheduler picks requests from queues in a fair manner
+Celery worker processes requests at a controlled rate
+Request is sent to external API
+Response is returned and stored if needed
