@@ -1,0 +1,72 @@
+Mobile Architecture
+
+The goal is to build a mobile version of the SymFlow platform that is:
+
+Primary: Click-based UI
+I propose a click-based interaction model as the primary interface.
+Why?
+Most logistics users (drivers, operators) need:
+Quick actions
+Minimal thinking
+Faster than typing or speaking
+
+Example:
+Upload POD → single button
+Track shipment → one tap
+
+Secondary: AI/Natural Language (Optional)
+Add a lightweight AI assistant for advanced queries
+Examples:
+“Show delayed shipments”
+“Check delivery status for order 123”
+This improves UX but should NOT replace main UI
+
+Tech Stack Decision
+Chosen: React Native
+Why React Native?
+Cross-platform (Android + iOS)
+Faster development
+Reusable logic from React web app
+Large ecosystem
+Why not Native (Kotlin/Swift)?
+Higher development time
+Separate codebases
+Not ideal for a small team/startup
+
+
+4. Architecture Design
+
+Mobile App (React Native)
+        ↓
+API Layer (Django/DRF)
+        ↓
+Backend Services
+        ↓
+Database (PostgreSQL)
+        ↓
+External Services (S3, AI APIs)
+
+Key Features & Design Choices
+1. Authentication
+JWT-based authentication
+Secure API communication
+2. API Communication
+REST APIs using Django backend
+Use Axios / Fetch
+3. State Management
+Redux / Context API
+Helps manage:
+User data
+Orders
+App state
+4. Offline Support (Important for logistics)
+
+Since drivers may have poor network:
+
+Cache important data locally
+Sync when network is available
+5. Performance Optimization
+Lazy loading screens
+Image compression before upload (for POD)
+Background sync
+
