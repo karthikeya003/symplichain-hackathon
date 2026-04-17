@@ -1,1 +1,0 @@
-# symplichain-hackathon
